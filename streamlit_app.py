@@ -46,7 +46,29 @@ if ingredients_list:
         st.success('Your Smoothie is ordered!', icon="✅")
 
 
-import requests
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-st.text(fruityvice_response.json())
+#import requests
+#fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+#st.text(fruityvice_response.json())
 #fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+
+import streamlit as st
+import requests
+
+# Make the API call
+fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+
+# Check if the request was successful
+if fruityvice_response.status_code == 200:
+    try:
+        # Try to parse the JSON response
+        fruit_data = fruityvice_response.json()
+        
+        # Display the JSON data in a nice format using st.json
+        st.json(fruit_data)  # This automatically formats the JSON in a readable way
+
+    except ValueError:
+        # Handle JSONDecodeError or other parsing issues
+        st.error("Error decoding JSON. The response might not be in valid JSON format.")
+else:
+    # Handle errors in the request itself (e.g., 404, 500, etc.)
+    st.error(f"Failed to fetch data. Status code: {fruityvice_response.status_code}")
